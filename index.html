@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XCOM: UPLINK DE CERTIFICADOS</title>
+    <style>
+        :root {
+            --xcom-blue: #00d4ff;
+            --xcom-bg: #000b14;
+            --xcom-panel: rgba(0, 31, 51, 0.6);
+            --xcom-text: #e0f7ff;
+            --xcom-gold: #ffcc00;
+            --xcom-alert: #ff3333;
+        }
+
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: var(--xcom-bg); 
+            color: var(--xcom-text); 
+            padding: 10px; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            overflow-x: hidden;
+            box-sizing: border-box;
+        }
+
+        /* Efecto de líneas de escaneo clásico de XCOM */
+        body::after {
+            content: "";
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
+            background-size: 100% 3px;
+            z-index: 1000;
+            pointer-events: none;
+            opacity: 0.15;
+        }
+
+        .card { 
+            background: var(--xcom-panel); 
+            padding: 30px; 
+            max-width: 550px; 
+            width: 100%; 
+            border: 1px solid var(--xcom-blue); 
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.15);
+            clip-path: polygon(5% 0, 100% 0, 100% 92%, 95% 100%, 0 100%, 0 8%);
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+
+        h2 { 
+            color: var(--xcom-blue); 
+            margin-top: 0; 
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-size: 1.5rem;
+            border-bottom: 1px solid rgba(0, 212, 255, 0.3);
+            padding-bottom: 10px;
+        }
+
+        p {
+            font-size: 0.95rem;
+            line-height: 1.4;
+            opacity: 0.9;
+        }
+
+        label { 
+            display: block; 
+            margin: 20px 0 5px; 
+            font-weight: bold; 
+            letter-spacing: 1px;
+            font-size: 0.85rem;
+            color: var(--xcom-blue);
+            text-transform: uppercase;
+        }
+
+        select, input[type="file"] { 
+            width: 100%; 
+            padding: 12px; 
+            background: #000; 
+            border: 1px solid var(--xcom-blue); 
+            color: var(--xcom-text); 
+            box-sizing: border-box; 
+            margin-bottom: 5px; 
+            font-family: inherit;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        select:focus, input[type="file"]:focus {
+            border-color: var(--xcom-gold);
+        }
+
+        .file-info { 
+            font-size: 11px; 
+            color: var(--xcom-gold); 
+            margin-top: 4px; 
+            margin-bottom: 15px; 
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        button { 
+            width: 100%; 
+            padding: 14px; 
+            background: var(--xcom-blue); 
+            border: none; 
+            color: #000; 
+            font-weight: bold; 
+            margin-top: 25px; 
+            cursor: pointer; 
+            font-size: 15px; 
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            transition: transform 0.1s regular, background-color 0.2s;
+        }
+
+        button:hover { 
+            background: var(--xcom-gold); 
+            box-shadow: 0 0 10px rgba(255, 204, 0, 0.4);
+        }
+
+        button:disabled { 
+            background: #333; 
+            color: #777;
+            border: 1px solid #555;
+            cursor: not-allowed; 
+            box-shadow: none;
+        }
+
+        #status { 
+            text-align: center; 
+            margin-top: 20px; 
+            font-weight: bold; 
+            font-family: monospace;
+            font-size: 0.9rem;
+            white-space: pre-line; 
+            letter-spacing: 0.5px;
+        }
+
+        /* Ajustes de Responsividad para pantallas móviles chicas */
+        @media (max-width: 480px) {
+            .card {
+                padding: 20px;
+                clip-path: none; /* Desactivar clip drástico en pantallas muy pequeñas */
+                border-radius: 4px;
+            }
+            h2 {
+                font-size: 1.25rem;
+            }
+            button {
+                font-size: 14px;
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>[ENTREGA DE CERTIFICADOS]</h2>
+    <p>Estableciendo enlace seguro con la Central. Selecciona tu nación de despliegue y sube los reportes técnicos requeridos (Formatos válidos: PDF o imágenes. Límite estricto: 10 archivos).</p>
+    
+    <form id="certificadosForm">
+        <label>Nación / Escuadrón:</label>
+        <select id="pais" required>
+            <option value="">-- SELECCIONAR NACIÓN --</option>
+            <option value="Alemania">ALEMANIA</option>
+            <option value="Arabia">ARABIA</option>
+            <option value="Argentina">ARGENTINA</option>
+            <option value="Australia">AUSTRALIA</option>
+            <option value="Belgica">BÉLGICA</option>
+            <option value="Brasil">BRASIL</option>
+            <option value="Canada">CANADÁ</option>
+            <option value="China">CHINA</option>
+            <option value="Colombia">COLOMBIA</option>
+            <option value="Corea del Sur">COREA DEL SUR</option>
+            <option value="Costa Rica">COSTA RICA</option>
+            <option value="Croacia">CROACIA</option>
+            <option value="Dinamarca">DINAMARCA</option>
+            <option value="Egipto">EGIPTO</option>
+            <option value="España">ESPAÑA</option>
+            <option value="Filipinas">FILIPINAS</option>
+            <option value="Finlandia">FINLANDIA</option>
+            <option value="Francia">FRANCIA</option>
+            <option value="Grecia">GRECIA</option>
+            <option value="Holanda">HOLANDA</option>
+            <option value="India">INDIA</option>
+            <option value="Israel">ISRAEL</option>
+            <option value="Italia">ITALIA</option>
+            <option value="Japon">JAPÓN</option>
+            <option value="Kenia">KENIA</option>
+            <option value="Malasia">MALASIA</option>
+            <option value="Marruecos">MARRUECOS</option>
+            <option value="Mexico">MÉXICO</option>
+            <option value="Nigeria">NIGERIA</option>
+            <option value="Noruega">NORUEGA</option>
+            <option value="Nueva Zelanda">NUEVA ZELANDA</option>
+            <option value="Panama">PANAMÁ</option>
+            <option value="Peru">PERÚ</option>
+            <option value="Polonia">POLONIA</option>
+            <option value="Portugal">PORTUGAL</option>
+            <option value="Reino Unido">REINO UNIDO</option>
+            <option value="Rusia">RUSIA</option>
+            <option value="Senegal">SENEGAL</option>
+            <option value="Singapur">SINGAPUR</option>
+            <option value="Sudafrica">SUDÁFRICA</option>
+            <option value="Suiza">SUIZA</option>
+            <option value="Tailandia">TAILANDIA</option>
+            <option value="Turquia">TURQUÍA</option>
+            <option value="Uruguay">URUGUAY</option>
+            <option value="USA">USA</option>
+            <option value="Vietnam">VIETNAM</option>
+        </select>
+
+        <label>Cargar Archivos de Datos:</label>
+        <input type="file" id="archivos" accept=".pdf, image/*" multiple required>
+        <div class="file-info">Uplink múltiple habilitado simultáneamente (MAX_FILES: 10).</div>
+
+        <button type="submit" id="btnEnviar">TRANSMITIR DATOS</button>
+    </form>
+    <div id="status"></div>
+</div>
+
+<script>
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyANOkkbl_xOPy1qI_cFP3mUN30-dtn2V0TffuFtgsEbqkcPg8Nx6XyXsKa3HjFzNs/exec";
+
+    const toBase64 = file => new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+    });
+
+    document.getElementById('certificadosForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const btn = document.getElementById('btnEnviar');
+        const status = document.getElementById('status');
+        const fileInput = document.getElementById('archivos');
+        const pais = document.getElementById('pais').value;
+        
+        if (fileInput.files.length > 10) {
+            status.style.color = "var(--xcom-alert)";
+            status.innerText = `CRITICAL_ERROR: Seleccionó ${fileInput.files.length} elementos.\nEl protocolo táctico permite un máximo de 10 archivos.`;
+            return;
+        }
+
+        btn.disabled = true;
+        status.style.color = "var(--xcom-gold)";
+        status.innerText = "PROCESANDO ARCHIVOS... ENCRIPTANDO UPLINK AL SERVIDOR.\nMANTENGA LA TERMINAL ACTIVA.";
+
+        try {
+            const listaPromesas = [];
+            
+            for (let i = 0; i < fileInput.files.length; i++) {
+                const file = fileInput.files[i];
+                const promesaArchivo = toBase64(file).then(base64Data => {
+                    return {
+                        nombreArchivo: file.name,
+                        datosBase64: base64Data
+                    };
+                });
+                listaPromesas.push(promesaArchivo);
+            }
+
+            const archivosProcesados = await Promise.all(listaPromesas);
+
+            const payload = {
+                pais: pais,
+                archivos: archivosProcesados
+            };
+
+            const response = await fetch(WEB_APP_URL, {
+                method: "POST",
+                body: JSON.stringify(payload)
+            });
+
+            const result = await response.json();
+
+            if (result.result === "success") {
+                status.style.color = "var(--xcom-blue)";
+                status.innerText = "¡TRANSMISIÓN COMPLETADA CON ÉXITO!\nLos archivos tácticos fueron registrados en la Base Central. CON TU AYUDA TENEMOS ESPERANZA EN LA GUERRA";
+                document.getElementById('certificadosForm').reset();
+            } else {
+                throw new Error(result.error || "Error interno del servidor de Google");
+            }
+            
+        } catch (err) {
+            console.error(err);
+            status.style.color = "var(--xcom-alert)";
+            status.innerText = "FALLO EN EL ENLACE DE DATOS.\nVerifique la señal de red central e intente de nuevo.";
+        } finally {
+            btn.disabled = false;
+        }
+    });
+</script>
+
+</body>
+</html>
